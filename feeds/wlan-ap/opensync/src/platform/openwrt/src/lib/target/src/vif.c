@@ -25,8 +25,10 @@
 
 #define MODULE_ID LOG_MODULE_ID_VIF
 #define UCI_BUFFER_SIZE 80
+#define BUF_SIZE                                32
 
 extern struct blob_buf b;
+char cfgid[BUF_SIZE];
 
 enum {
 	WIF_ATTR_DEVICE,
@@ -274,10 +276,10 @@ static void vif_config_custom_opt_set(struct blob_buf *b,
 			blobmsg_add_string(b, "cdrate", value);
 		else if (strcmp(opt, "client_ul_limit") == 0)
 			blobmsg_add_string(b, "curate", value);
-                else if (strcmp(opt, "rts_threshold") == 0)
-                        blobmsg_add_string(b, "rts_threshold", value);
-                else if (strcmp(opt, "dtim_period") == 0)
-                        blobmsg_add_string(b, "dtim_period", value);
+		else if (strcmp(opt, "rts_threshold") == 0)
+			blobmsg_add_string(b, "rts_threshold", value);
+		else if (strcmp(opt, "dtim_period") == 0)
+			blobmsg_add_string(b, "dtim_period", value);
 
 	}
 }
@@ -356,22 +358,49 @@ static void vif_state_custom_options_get(struct schema_Wifi_VIF_State *vstate,
 							buf);
 			}
 		} else if (strcmp(opt, "rts_threshold") == 0) {
-                        if (tb[WIF_ATTR_RTS_THRESHOLD]) {
-                                buf = blobmsg_get_string(tb[WIF_ATTR_RTS_THRESHOLD]);
-                                set_custom_option_state(vstate, &index,
-                                                        custom_options_table[i],
-                                                        buf);
-                        }
-                } else if (strcmp(opt, "dtim_period") == 0) {
-                        if (tb[WIF_ATTR_DTIM_PERIOD]) {
-                                buf = blobmsg_get_string(tb[WIF_ATTR_DTIM_PERIOD]);
-                                set_custom_option_state(vstate, &index,
-                                                        custom_options_table[i],
-                                                        buf);
-                        }
-                }
+			if (tb[WIF_ATTR_RTS_THRESHOLD]) {
+				buf = blobmsg_get_string(tb[WIF_ATTR_RTS_THRESHOLD]);
+				set_custom_option_state(vstate, &index,
+						custom_options_table[i],
+						buf);
+			}
+		} else if (strcmp(opt, "dtim_period") == 0) {
+			if (tb[WIF_ATTR_DTIM_PERIOD]) {
+				buf = blobmsg_get_string(tb[WIF_ATTR_DTIM_PERIOD]);
+				set_custom_option_state(vstate, &index,
+						custom_options_table[i],
+						buf);
+			}
+		}
 
 	}
+}
+
+
+#define unnamed_sec "\
+		#/bin/bash \n\
+		cfgid=$( uci show dhcp.@dnsmasq[0] ) \n\
+		cfgid=${cfgid%%'='*} \n\
+		cfgid=${cfgid#*'.'} \n\
+		echo $cfgid \n\
+		"
+
+int get_unnamed_section(void) {
+
+	FILE *fp;
+	if ((fp = popen(unnamed_sec, "r")) == NULL) {
+		LOGN("Error opening pipe!\n");
+		return -1;
+	}
+
+	while (fgets(cfgid, BUF_SIZE, fp) != NULL) {
+	}
+
+	if(pclose(fp))  {
+		LOGN("Command not found or exited with error status\n");
+		return -1;
+	}
+	return 0;
 }
 
 bool vif_state_update(struct uci_section *s, struct schema_Wifi_VIF_Config *vconf)
@@ -381,6 +410,7 @@ bool vif_state_update(struct uci_section *s, struct schema_Wifi_VIF_Config *vcon
 	char mac[ETH_ALEN * 3];
 	char *ifname, radio[IF_NAMESIZE];
 	char band[8];
+	char section_name[10];
 
 	memset(&vstate, 0, sizeof(vstate));
 	schema_Wifi_VIF_State_mark_all_present(&vstate);
@@ -500,11 +530,12 @@ bool vif_state_update(struct uci_section *s, struct schema_Wifi_VIF_Config *vcon
 			vstate.mac_list_len++;
 		}
 	}
-
 	vif_state_security_get(&vstate, tb);
 	vif_state_custom_options_get(&vstate, tb);
-	vif_state_captive_portal_options_get(&vstate,s);
-	vif_state_dhcp_allowlist_get(&vstate,s);
+	vif_state_captive_portal_options_get(&vstate, s);
+	get_unnamed_section();
+	strncpy(section_name,cfgid,9);
+	vif_state_dhcp_allowlist_get(&vstate, section_name);
 
 	if (vconf) {
 		LOGN("%s: updating vif config", radio);
