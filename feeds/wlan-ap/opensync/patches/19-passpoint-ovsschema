@@ -1,0 +1,318 @@
+--- a/interfaces/opensync.ovsschema
++++ b/interfaces/opensync.ovsschema
+@@ -8825,6 +8825,315 @@
+             }
+         },
+         "isRoot": true
++    },
++    "Wifi_Passpoint_Config": {
++        "columns": {
++            "enable": {
++                "type": {
++                    "key": {
++                        "type": "boolean"
++                    },
++                    "min": 0,
++                    "max": 1
++                }
++            },
++            "hessid": {
++                "type": {
++                "key": {
++                  "type": "string"
++                },
++                "min": 0,
++                "max": 1
++              }
++            },
++            "venue_group_type": {
++                "type": {
++                "key": {
++                  "type": "string"
++                },
++                "min": 0,
++                "max": 1
++              }
++            },
++            "roaming_oi": {
++              "type": {
++                "key": "string",
++                "value": {
++                  "type": "string",
++                  "maxLength": 128
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            },
++            "venue_name": {
++              "type": {
++                "key": "string",
++                "value": {
++                  "type": "string",
++                  "maxLength": 128
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            },
++            "venue_url": {
++              "type": {
++                "key": "string",
++                "value": {
++                  "type": "string",
++                  "maxLength": 128
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            },
++            "network_auth_type": {
++                "type": {
++                "key": {
++                  "type": "string"
++                },
++                "min": 0,
++                "max": 1
++              }
++            },
++            "ipaddr_type": {
++                "type": {
++                "key": {
++                  "type": "string"
++                },
++                "min": 0,
++                "max": 1
++              }
++            },
++            "domain_name": {
++              "type": {
++                "key": "string",
++                "value": {
++                  "type": "string",
++                  "maxLength": 128
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            },
++            "mcc_mnc": {
++              "type": {
++                "key": "string",
++                "value": {
++                  "type": "string",
++                  "maxLength": 128
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            },
++            "nai_realm": {
++              "type": {
++                "key": "string",
++                "value": {
++                  "type": "string",
++                  "maxLength": 128
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            },
++            "gas_addr3_behavior": {
++              "type": {
++                "key": {
++                  "type": "integer"
++                },
++                "min": 0,
++                "max": 1
++              }
++            },
++            "osen": {
++              "type": {
++                "key": {
++                  "type": "boolean"
++                },
++                "min": 0,
++                "max": 1
++              }
++            },
++            "anqp_domain_id": {
++              "type": {
++                "key": {
++                  "type": "integer"
++                },
++                "min": 0,
++                "max": 1
++              }
++            },
++            "deauth_request_timeout": {
++              "type": {
++                "key": {
++                  "type": "integer",
++                    "minInteger": 0,
++                    "maxInteger": 255
++                }
++              }
++            },
++            "operator_friendly_name": {
++              "type": {
++                "key": "string",
++                "value": {
++                  "type": "string",
++                  "maxLength": 128
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            },
++            "connection_capability": {
++              "type": {
++                "key": "string",
++                "value": {
++                  "type": "string",
++                  "maxLength": 128
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            },
++            "operating_class": {
++              "type": {
++                "key": {
++                  "type": "integer"
++                },
++                "min": 0,
++                "max": 1
++              }
++            },
++            "tos": {
++              "type": {
++                "key": {
++                  "type": "string"
++                }
++              }
++            },
++            "osu_icons": {
++              "type": {
++                "key": "string",
++                "value": {
++                  "type": "string",
++                  "maxLength": 128
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            },
++            "operator_icons": {
++              "type": {
++                "key": "string",
++                "value": {
++                  "type": "string",
++                  "maxLength": 128
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            },
++            "osu_ssid": {
++              "type": {
++                "key": {
++                  "type": "string"
++                }
++              }
++            },
++            "vif_config": {
++              "type": {
++                "key": {
++                  "type": "uuid",
++                  "refTable": "Wifi_VIF_Config",
++                  "refType": "weak"
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            },
++            "osu_providers": {
++              "type": {
++                "key": {
++                  "type": "uuid",
++                  "refTable": "Wifi_OSU_Provider",
++                  "refType": "weak"
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            }
++          },
++      "isRoot": true
++    },
++    "Wifi_OSU_Provider": {
++        "columns": {
++            "server_uri": {
++                "type": {
++                "key": {
++                  "type": "string"
++                },
++                "min": 0,
++                "max": 1
++              }
++            },
++            "osu_friendly_name": {
++              "type": {
++                "key": "string",
++                "value": {
++                  "type": "string",
++                  "maxLength": 128
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            },
++            "osu_nai": {
++              "type": {
++                "key": "string",
++                "value": {
++                  "type": "string",
++                  "maxLength": 128
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            },
++            "method_list": {
++              "type": {
++                "key": {
++                  "type": "integer"
++                },
++                "min": 0,
++                "max": 1
++              }
++            },
++            "icon": {
++              "type": {
++                "key": "string",
++                "value": {
++                  "type": "string",
++                  "maxLength": 128
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            },
++            "service_description": {
++              "type": {
++                "key": "string",
++                "value": {
++                  "type": "string",
++                  "maxLength": 128
++                },
++                "min": 0,
++                "max": "unlimited"
++              }
++            }
++       },
++      "isRoot": true
+     }
+   }
+ }
++
